@@ -53,7 +53,6 @@
 
 [CmdletBinding()]
 	param (
-		[Parameter(Mandatory = $true)]
 		[string]$RootOUPath,
         [string]$ADDomainController,
 		[string]$RoyalDocumentPath = (Join-Path -Path $env:USERPROFILE -ChildPath ('Documents\' + $env:USERDOMAIN + '.rtsz')),
@@ -273,7 +272,11 @@ function Update-RoyalComputerProperty {
 
 try
 {
-    $RootOU = Get-ADOrganizationalUnit -Server $ADDomainController -Identity $RootOUPath -ErrorAction Stop
+    if ($null -ne $RootOUPath -and $rootOupath -ne ""){
+      $RootOU = Get-ADOrganizationalUnit -Server $ADDomainController -Identity $RootOUPath -ErrorAction Stop
+    }else{
+      $RootOU = Get-ADOrganizationalUnit -Server $ADDomainController -Filter * -SearchScope OneLevel -ErrorAction Stop
+    }
 }
 catch
 {
